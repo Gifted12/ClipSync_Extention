@@ -1,0 +1,199 @@
+/* ===== CSS VARIABLES ===== */
+:root {
+  --font-display: 'Syne', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+
+  /* Light theme */
+  --bg-primary: #F8F7F4;
+  --bg-secondary: #FFFFFF;
+  --bg-tertiary: #F0EDE8;
+  --bg-card: #FFFFFF;
+  --bg-hover: #F0EDE8;
+
+  --text-primary: #0D0D0D;
+  --text-secondary: #4A4A4A;
+  --text-muted: #9A9A9A;
+  --text-inverse: #FFFFFF;
+
+  --accent: #1A1A2E;
+  --accent-hover: #16213E;
+  --accent-2: #E8532A;
+  --accent-2-hover: #D4471F;
+
+  --border: #E5E2DC;
+  --border-focus: #1A1A2E;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.12);
+
+  --radius: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+
+  --transition: all 0.2s ease;
+}
+
+[data-theme="dark"] {
+  --bg-primary: #0A0A0F;
+  --bg-secondary: #111118;
+  --bg-tertiary: #1A1A24;
+  --bg-card: #141420;
+  --bg-hover: #1E1E2C;
+
+  --text-primary: #F0EDE8;
+  --text-secondary: #A8A5A0;
+  --text-muted: #5A5A6A;
+  --text-inverse: #0D0D0D;
+
+  --accent: #E8EDFF;
+  --accent-hover: #D0D8FF;
+  --accent-2: #E8532A;
+  --accent-2-hover: #F06030;
+
+  --border: #2A2A3A;
+  --border-focus: #E8EDFF;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+  --shadow-lg: 0 12px 40px rgba(0,0,0,0.5);
+}
+
+/* ===== RESET ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  line-height: 1.6;
+  font-size: 15px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; font-family: var(--font-body); }
+input, textarea, select { font-family: var(--font-body); }
+img { max-width: 100%; display: block; }
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ===== UTILITY ===== */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); border: 0;
+}
+
+/* ===== LAYOUT ===== */
+.container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+
+/* ===== BUTTONS ===== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px 20px;
+  font-size: 14px; font-weight: 500;
+  border: none; border-radius: var(--radius);
+  cursor: pointer; transition: var(--transition);
+  white-space: nowrap;
+}
+.btn-primary {
+  background: var(--accent); color: var(--text-inverse);
+}
+.btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn-secondary {
+  background: transparent; color: var(--text-primary);
+  border: 1.5px solid var(--border);
+}
+.btn-secondary:hover { background: var(--bg-hover); border-color: var(--text-primary); }
+.btn-danger { background: #DC2626; color: #fff; }
+.btn-danger:hover { background: #B91C1C; }
+.btn-ghost { background: transparent; color: var(--text-secondary); padding: 8px; }
+.btn-ghost:hover { background: var(--bg-hover); color: var(--text-primary); }
+.btn-lg { padding: 13px 28px; font-size: 15px; }
+.btn-sm { padding: 6px 14px; font-size: 13px; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
+
+/* ===== FORM ===== */
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label { font-size: 13px; font-weight: 500; color: var(--text-secondary); letter-spacing: 0.02em; }
+.form-input {
+  width: 100%; padding: 11px 14px;
+  background: var(--bg-secondary); color: var(--text-primary);
+  border: 1.5px solid var(--border); border-radius: var(--radius);
+  font-size: 14px; transition: var(--transition); outline: none;
+}
+.form-input:focus { border-color: var(--border-focus); box-shadow: 0 0 0 3px rgba(26,26,46,0.08); }
+[data-theme="dark"] .form-input:focus { box-shadow: 0 0 0 3px rgba(232,237,255,0.08); }
+.form-input::placeholder { color: var(--text-muted); }
+.form-error { font-size: 12px; color: #DC2626; margin-top: 2px; }
+
+/* ===== CARD ===== */
+.card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-md); padding: 20px;
+  box-shadow: var(--shadow-sm); transition: var(--transition);
+}
+.card:hover { box-shadow: var(--shadow-md); }
+
+/* ===== BADGE ===== */
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 8px; border-radius: 4px;
+  font-size: 11px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.badge-text { background: #EEF2FF; color: #4F46E5; }
+.badge-image { background: #FEF3C7; color: #D97706; }
+.badge-document { background: #DCFCE7; color: #16A34A; }
+[data-theme="dark"] .badge-text { background: #1E1B4B; color: #A5B4FC; }
+[data-theme="dark"] .badge-image { background: #1C1400; color: #FBB800; }
+[data-theme="dark"] .badge-document { background: #052E16; color: #4ADE80; }
+
+/* ===== SPINNER ===== */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner {
+  width: 20px; height: 20px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: inline-block;
+}
+.spinner-lg { width: 40px; height: 40px; border-width: 3px; }
+.spinner-overlay {
+  position: fixed; inset: 0; z-index: 9999;
+  background: var(--bg-primary);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 16px;
+}
+
+/* ===== DIVIDER ===== */
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  color: var(--text-muted); font-size: 13px;
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* ===== TOOLTIP ===== */
+[data-tooltip] { position: relative; }
+[data-tooltip]:hover::after {
+  content: attr(data-tooltip);
+  position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+  background: var(--text-primary); color: var(--bg-primary);
+  padding: 4px 10px; border-radius: 4px; font-size: 12px; white-space: nowrap;
+  pointer-events: none; z-index: 100;
+}

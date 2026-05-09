@@ -1,0 +1,98 @@
+.root {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-primary);
+  position: relative;
+  overflow: hidden;
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 40px 24px;
+  max-width: 480px;
+}
+
+.code {
+  font-family: var(--font-display);
+  font-size: clamp(5rem, 15vw, 10rem);
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  color: var(--text-primary);
+  position: relative;
+  z-index: 1;
+}
+
+.glitch {
+  font-family: var(--font-display);
+  font-size: clamp(5rem, 15vw, 10rem);
+  font-weight: 800;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  color: var(--accent-2);
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 0.12;
+  animation: glitch 4s infinite;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+@keyframes glitch {
+  0%, 90%, 100% { transform: translateX(-50%) translate(0,0) skew(0); }
+  92% { transform: translateX(-50%) translate(-4px, 2px) skew(-2deg); }
+  94% { transform: translateX(-50%) translate(4px, -2px) skew(2deg); }
+  96% { transform: translateX(-50%) translate(-2px, 3px) skew(-1deg); }
+  98% { transform: translateX(-50%) translate(2px, -1px) skew(1deg); }
+}
+
+.title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.desc {
+  font-size: 15px;
+  color: var(--text-muted);
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Background grid animation */
+.grid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.3;
+}
+
+.cell {
+  border: 1px solid var(--border);
+  animation: pulse 3s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.6; background: var(--bg-tertiary); }
+}
