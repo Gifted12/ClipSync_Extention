@@ -18,7 +18,7 @@ const clipSchema = new mongoose.Schema({
     default: 'Untitled',
   },
   content: {
-    type: String, // text content or URL for files
+    type: String, 
     default: '',
   },
   fileUrl: { type: String, default: '' },
@@ -30,7 +30,7 @@ const clipSchema = new mongoose.Schema({
   tags: [{ type: String, trim: true }],
 }, { timestamps: true });
 
-// Index for fast queries per user
+
 clipSchema.index({ user: 1, createdAt: -1 });
 clipSchema.index({ user: 1, type: 1 });
 

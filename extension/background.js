@@ -1,8 +1,8 @@
-// ClipSync Extension - Background Service Worker
 
-const API_BASE = 'http://localhost:5000/api'; // Change to your production URL
 
-// ── Context menu setup ────────────────────────────────────
+const API_BASE = 'http://localhost:5000/api';
+// 'https://clipsync-mfxe.onrender.com'
+
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     id: 'clipsync-save-text',
@@ -17,7 +17,7 @@ chrome.runtime.onInstalled.addListener(() => {
   console.log('ClipSync extension installed');
 });
 
-// ── Context menu click handler ────────────────────────────
+
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   const result = await chrome.storage.local.get('token');
   const token = result.token;
@@ -42,7 +42,7 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
           tags: '[]',
         }),
       });
-      // Notify the tab
+     
       chrome.tabs.sendMessage(tab.id, { action: 'clipsync-saved', message: 'Text saved to ClipSync!' });
     } catch (err) {
       console.error('ClipSync save failed:', err);
@@ -50,19 +50,19 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   }
 
   if (info.menuItemId === 'clipsync-save-image' && info.srcUrl) {
-    // For images, open popup so user can confirm
+ 
     await chrome.storage.local.set({ pendingImageUrl: info.srcUrl });
     chrome.action.openPopup();
   }
 });
 
-// ── Message listener ──────────────────────────────────────
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === 'getToken') {
     chrome.storage.local.get('token', (data) => {
       sendResponse({ token: data.token || null });
     });
-    return true; // Keep channel open for async response
+    return true; 
   }
 
   if (request.action === 'saveClip') {
@@ -85,13 +85,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-// ── Alarm for periodic sync ───────────────────────────────
+
 chrome.alarms.create('sync', { periodInMinutes: 5 });
 
 chrome.alarms.onAlarm.addListener(async (alarm) => {
   if (alarm.name !== 'sync') return;
   const result = await chrome.storage.local.get('token');
   if (!result.token) return;
-  // Could do background sync tasks here
-  console.log('ClipSync background sync tick');
+  
+ 
 });

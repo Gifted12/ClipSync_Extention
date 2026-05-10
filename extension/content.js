@@ -1,4 +1,4 @@
-// ClipSync content script — shows in-page toast when text is saved via context menu
+
 
 chrome.runtime.onMessage.addListener((request) => {
   if (request.action === 'clipsync-saved') {
@@ -7,7 +7,7 @@ chrome.runtime.onMessage.addListener((request) => {
 });
 
 function showToast(message) {
-  // Remove existing
+ 
   const existing = document.getElementById('clipsync-toast');
   if (existing) existing.remove();
 

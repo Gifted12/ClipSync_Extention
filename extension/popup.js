@@ -1,21 +1,21 @@
-const API_BASE = 'http://localhost:5000/api'; // Change to production URL
+const API_BASE = 'http://localhost:5000/api'; 
 
-// ─── State ───────────────────────────────────────────────
+
 let state = {
   token: null,
   user: null,
   clips: [],
-  activeTab: 'clips',   // 'clips' | 'add' | 'settings'
+  activeTab: 'clips',   
   clipType: 'text',
   loading: false,
   theme: 'light',
 };
 
-// ─── Storage helpers ─────────────────────────────────────
+
 const save = (key, val) => chrome.storage.local.set({ [key]: val });
 const load = (key) => new Promise(r => chrome.storage.local.get(key, d => r(d[key])));
 
-// ─── API helpers ─────────────────────────────────────────
+
 async function apiFetch(path, options = {}) {
   const res = await fetch(`${API_BASE}${path}`, {
     ...options,
@@ -28,7 +28,6 @@ async function apiFetch(path, options = {}) {
   return res.json();
 }
 
-// ─── Toast ───────────────────────────────────────────────
 function showToast(msg, duration = 2200) {
   const el = document.getElementById('toast');
   el.textContent = msg;
@@ -36,7 +35,7 @@ function showToast(msg, duration = 2200) {
   setTimeout(() => el.classList.remove('toast-show'), duration);
 }
 
-// ─── Render ──────────────────────────────────────────────
+
 function render() {
   const app = document.getElementById('app');
   document.documentElement.setAttribute('data-theme', state.theme);
@@ -51,7 +50,7 @@ function render() {
   attachMainHandlers();
 }
 
-// ─── Auth screen ─────────────────────────────────────────
+
 function renderAuth() {
   return `
     <div class="auth-screen">
@@ -110,7 +109,7 @@ function attachAuthHandlers() {
   });
 }
 
-// ─── Main popup ──────────────────────────────────────────
+
 function renderMain() {
   return `
     <div class="popup-header">
@@ -244,9 +243,9 @@ function renderSettings() {
   `;
 }
 
-// ─── Event handlers ──────────────────────────────────────
+
 function attachMainHandlers() {
-  // Tabs
+
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
       state.activeTab = tab.dataset.tab;
@@ -254,13 +253,13 @@ function attachMainHandlers() {
     });
   });
 
-  // Settings toggle
+
   document.getElementById('settingsToggle')?.addEventListener('click', () => {
     state.activeTab = state.activeTab === 'settings' ? 'clips' : 'settings';
     render();
   });
 
-  // Logout
+
   document.getElementById('logoutBtn')?.addEventListener('click', async () => {
     state.token = null;
     state.user = null;
@@ -270,7 +269,7 @@ function attachMainHandlers() {
     render();
   });
 
-  // Type buttons
+
   document.querySelectorAll('.type-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       state.clipType = btn.dataset.type;
@@ -278,7 +277,7 @@ function attachMainHandlers() {
     });
   });
 
-  // Paste button
+
   document.getElementById('pasteBtn')?.addEventListener('click', async () => {
     try {
       const text = await navigator.clipboard.readText();
@@ -286,7 +285,7 @@ function attachMainHandlers() {
     } catch { showToast('Could not access clipboard'); }
   });
 
-  // Save clip
+
   document.getElementById('saveClipBtn')?.addEventListener('click', async () => {
     const content = document.getElementById('clipContent')?.value?.trim();
     if (!content) { showToast('Please enter some text'); return; }
@@ -310,7 +309,7 @@ function attachMainHandlers() {
     }
   });
 
-  // Copy buttons
+
   document.querySelectorAll('.copy-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       navigator.clipboard.writeText(btn.dataset.content)
@@ -319,7 +318,6 @@ function attachMainHandlers() {
     });
   });
 
-  // Delete buttons
   document.querySelectorAll('.delete-btn').forEach(btn => {
     btn.addEventListener('click', async () => {
       try {
@@ -331,7 +329,7 @@ function attachMainHandlers() {
     });
   });
 
-  // Theme toggle
+  
   document.getElementById('themeToggle')?.addEventListener('click', async () => {
     const newTheme = state.theme === 'dark' ? 'light' : 'dark';
     state.theme = newTheme;
@@ -347,7 +345,7 @@ function attachMainHandlers() {
   });
 }
 
-// ─── Data ────────────────────────────────────────────────
+
 async function loadClips() {
   state.loading = true;
   try {
@@ -360,7 +358,7 @@ async function loadClips() {
   }
 }
 
-// ─── Utils ───────────────────────────────────────────────
+
 function timeAgo(date) {
   const diff = Date.now() - new Date(date);
   const m = Math.floor(diff / 60000);
@@ -387,7 +385,7 @@ function logoSVG(size) {
   </svg>`;
 }
 
-// ─── Init ────────────────────────────────────────────────
+
 async function init() {
   const [token, user, theme] = await Promise.all([load('token'), load('user'), load('theme')]);
   if (token && user) {

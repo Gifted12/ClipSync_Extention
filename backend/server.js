@@ -65,7 +65,7 @@ app.use('/api/*', (req, res) => {
 
 
 app.use((err, req, res, next) => {
-  console.error('❌ Server error:', err.stack);
+  console.error(' Server error:', err.stack);
   res.status(err.status || 500).json({
     message: err.message || 'Internal Server Error',
   });
