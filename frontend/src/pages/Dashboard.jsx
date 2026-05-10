@@ -7,6 +7,8 @@ import api from '../utils/api';
 import { useStore } from '../store';
 import Spinner from '../components/ui/Spinner';
 import styles from './Dashboard.module.css';
+import search from "../image/loupe.png";
+import removee from "../image/remove.png";
 
 const TABS = ['all', 'text', 'image', 'document'];
 
@@ -54,7 +56,7 @@ export default function Dashboard() {
 
   return (
     <div className={styles.root}>
-      {/* Sidebar */}
+      
       <aside className={styles.sidebar}>
         <div className={styles.brand}>
           <svg width="28" height="28" viewBox="0 0 32 32" fill="none">
@@ -84,7 +86,7 @@ export default function Dashboard() {
         </div>
       </aside>
 
-      {/* Main */}
+     
       <main className={styles.main}>
         <header className={styles.header}>
           <div className={styles.headerLeft}>
@@ -95,7 +97,7 @@ export default function Dashboard() {
           </div>
           <div className={styles.headerRight}>
             <div className={styles.searchWrap}>
-              <span className={styles.searchIcon}>🔍</span>
+              <span className={styles.searchIcon}><img style={{width:"15px"}} src={search} alt="" /></span>
               <input className={styles.searchInput} placeholder="Search clips…"
                 value={search} onChange={e => setSearch(e.target.value)} />
               {search && <button className={styles.clearBtn} onClick={() => setSearch('')}>✕</button>}
@@ -151,7 +153,7 @@ function ClipCard({ clip, onDelete, onPin, onCopy }) {
               </button>
               <button className={styles.menuItem} style={{ color: '#DC2626' }}
                 onClick={() => { onDelete(clip._id); setMenuOpen(false); }}>
-                🗑 Delete
+                <img style={{width:"15px"}} src={removee} alt="" /> Delete
               </button>
             </div>
           )}

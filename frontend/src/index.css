@@ -1,9 +1,9 @@
-/* ===== CSS VARIABLES ===== */
+
 :root {
   --font-display: 'Syne', sans-serif;
   --font-body: 'DM Sans', sans-serif;
 
-  /* Light theme */
+ 
   --bg-primary: #F8F7F4;
   --bg-secondary: #FFFFFF;
   --bg-tertiary: #F0EDE8;
@@ -85,22 +85,22 @@ button { cursor: pointer; font-family: var(--font-body); }
 input, textarea, select { font-family: var(--font-body); }
 img { max-width: 100%; display: block; }
 
-/* ===== SCROLLBAR ===== */
+
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
 
-/* ===== UTILITY ===== */
+
 .sr-only {
   position: absolute; width: 1px; height: 1px;
   padding: 0; margin: -1px; overflow: hidden;
   clip: rect(0,0,0,0); border: 0;
 }
 
-/* ===== LAYOUT ===== */
+
 .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
 
-/* ===== BUTTONS ===== */
+
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
   padding: 10px 20px;
@@ -126,7 +126,7 @@ img { max-width: 100%; display: block; }
 .btn-sm { padding: 6px 14px; font-size: 13px; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none !important; }
 
-/* ===== FORM ===== */
+
 .form-group { display: flex; flex-direction: column; gap: 6px; }
 .form-label { font-size: 13px; font-weight: 500; color: var(--text-secondary); letter-spacing: 0.02em; }
 .form-input {
@@ -140,7 +140,7 @@ img { max-width: 100%; display: block; }
 .form-input::placeholder { color: var(--text-muted); }
 .form-error { font-size: 12px; color: #DC2626; margin-top: 2px; }
 
-/* ===== CARD ===== */
+
 .card {
   background: var(--bg-card); border: 1px solid var(--border);
   border-radius: var(--radius-md); padding: 20px;
@@ -148,7 +148,7 @@ img { max-width: 100%; display: block; }
 }
 .card:hover { box-shadow: var(--shadow-md); }
 
-/* ===== BADGE ===== */
+
 .badge {
   display: inline-flex; align-items: center; gap: 4px;
   padding: 3px 8px; border-radius: 4px;
@@ -161,7 +161,7 @@ img { max-width: 100%; display: block; }
 [data-theme="dark"] .badge-image { background: #1C1400; color: #FBB800; }
 [data-theme="dark"] .badge-document { background: #052E16; color: #4ADE80; }
 
-/* ===== SPINNER ===== */
+
 @keyframes spin { to { transform: rotate(360deg); } }
 .spinner {
   width: 20px; height: 20px;
@@ -179,7 +179,7 @@ img { max-width: 100%; display: block; }
   flex-direction: column; gap: 16px;
 }
 
-/* ===== DIVIDER ===== */
+
 .divider {
   display: flex; align-items: center; gap: 12px;
   color: var(--text-muted); font-size: 13px;
@@ -188,7 +188,7 @@ img { max-width: 100%; display: block; }
   content: ''; flex: 1; height: 1px; background: var(--border);
 }
 
-/* ===== TOOLTIP ===== */
+
 [data-tooltip] { position: relative; }
 [data-tooltip]:hover::after {
   content: attr(data-tooltip);

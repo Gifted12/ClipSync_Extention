@@ -5,6 +5,8 @@ import toast from 'react-hot-toast';
 import AuthLayout from '../components/layout/AuthLayout';
 import Spinner from '../components/ui/Spinner';
 import api from '../utils/api';
+import visible from "../image/visible.png";
+import invinsible from "../image/eye.png";
 import { useStore } from '../store';
 
 export default function Login() {
@@ -72,11 +74,11 @@ export default function Login() {
               onChange={handleChange} required style={{ paddingRight: 44 }}
             />
             <button
-              type="button" className="btn btn-ghost"
+              type="button" className="btn btn-ghost2"
               onClick={() => setShowPw(p => !p)}
               style={{ position: 'absolute', right: 4, top: '50%', transform: 'translateY(-50%)', padding: '6px 8px' }}
             >
-              {showPw ? '🙈' : '👁'}
+              {showPw ? <img style={{width:"20px"}} src={visible} alt="Visible" /> : <img style={{width:"20px"}} src={invinsible} alt="Invisible" />}
             </button>
           </div>
         </div>
