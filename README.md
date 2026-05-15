@@ -32,14 +32,14 @@ The platform combines a responsive web application with a Chrome Extension, givi
 | Extension | Chrome Manifest V3, vanilla JS |
 
 ---
-## Services You'll Need
+## Services
 
 | Service | Purpose | Free tier? |
 |---|---|---|
 | [MongoDB Atlas](https://www.mongodb.com/atlas) | Database | ✅ 512MB |
 | [Cloudinary](https://cloudinary.com) | File storage | ✅ 25GB |
 | [Google Cloud Console](https://console.cloud.google.com) | OAuth | ✅ |
-| Gmail / SMTP | Password reset emails | ✅ |
+
 
 Reno © 2026 ClipSync
 ## by Josiah
