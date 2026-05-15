@@ -78,7 +78,7 @@ export default function Login() {
               onClick={() => setShowPw(p => !p)}
               style={{ position: 'absolute', right: 4, top: '50%', transform: 'translateY(-50%)', padding: '6px 8px' }}
             >
-              {showPw ? <img style={{width:"20px"}} src={visible} alt="Visible" /> : <img style={{width:"20px"}} src={invinsible} alt="Invisible" />}
+              {showPw ? <span class="material-symbols-outlined">visibility</span> : <span class="material-symbols-outlined">visibility_off</span>}
             </button>
           </div>
         </div>

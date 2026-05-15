@@ -13,15 +13,15 @@ export default function Settings() {
   return (
     <div className={styles.root}>
       <aside className={styles.sidebar}>
-        <div className={styles.backLink}>
-          <Link to="/dashboard">← Back</Link>
+        <div  className={styles.backLink}>
+          <Link to="/dashboard"><p style={{display:"flex", alignItems:"center", gap:".5rem"}}><span  className="material-symbols-outlined">arrow_left_alt </span> Back </p></Link>
         </div>
         <div className={styles.brand}>Settings</div>
         <nav className={styles.nav}>
           {[
-            { id: 'profile', label: 'Profile', icon: '👤' },
-            { id: 'appearance', label: 'Appearance', icon: '🎨' },
-            { id: 'security', label: 'Security', icon: '🔒' },
+            { id: 'profile', label: 'Profile', icon: <span  className="material-symbols-outlined">person </span> },
+            { id: 'appearance', label: 'Appearance', icon: <span  className="material-symbols-outlined">palette</span> },
+            { id: 'security', label: 'Security', icon: <span  className="material-symbols-outlined">security </span> },
           ].map(t => (
             <button key={t.id} className={`${styles.navItem} ${tab === t.id ? styles.navActive : ''}`}
               onClick={() => setTab(t.id)}>
@@ -31,7 +31,7 @@ export default function Settings() {
         </nav>
         <div className={styles.sidebarBottom}>
           <button className={styles.logoutBtn} onClick={() => { logout(); window.location.href = '/login'; }}>
-            → Sign out
+            <span  className="material-symbols-outlined">logout </span> Sign out
           </button>
         </div>
       </aside>
@@ -89,7 +89,7 @@ function ProfileTab({ user, updateUser }) {
           ) : (
             <div className={styles.avatarFallback}>{user?.name?.[0]?.toUpperCase() || 'U'}</div>
           )}
-          <button className={styles.avatarEdit} onClick={() => fileRef.current?.click()}>✏</button>
+          <button className={styles.avatarEdit} onClick={() => fileRef.current?.click()}><span style={{fontSize:"1.1rem"}}  className="material-symbols-outlined">edit</span></button>
         </div>
         <div>
           <div style={{ fontWeight: 600, fontSize: 15 }}>{user?.name}</div>

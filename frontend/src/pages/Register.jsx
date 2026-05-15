@@ -11,6 +11,7 @@ export default function Register() {
   const navigate = useNavigate();
   const { setAuth } = useStore();
   const [form, setForm] = useState({ name: '', email: '', password: '' });
+  const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => setForm(p => ({ ...p, [e.target.name]: e.target.value }));
@@ -68,8 +69,18 @@ export default function Register() {
         </div>
         <div className="form-group">
           <label className="form-label">Password</label>
-          <input className="form-input" type="password" name="password" placeholder="Min. 6 characters"
+          <div style={{ position: 'relative' }}>
+            <input className="form-input" type={showPw ? 'text' : 'password'} name="password" placeholder="Min. 6 characters"
             value={form.password} onChange={handleChange} required />
+              <button
+              type="button" className="btn btn-ghost2"
+              onClick={() => setShowPw(p => !p)}
+              style={{ position: 'absolute', right: 4, top: '50%', transform: 'translateY(-50%)', padding: '6px 8px' }}
+            >
+              {showPw ? <span class="material-symbols-outlined">visibility</span> : <span class="material-symbols-outlined">visibility_off</span>}
+            </button>
+          </div>
+
           {form.password.length > 0 && (
             <div style={{ display: 'flex', gap: 4, marginTop: 6 }}>
               {[1, 2, 3].map(n => (

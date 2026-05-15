@@ -78,10 +78,10 @@ export default function Dashboard() {
         </nav>
         <div className={styles.sidebarBottom}>
           <Link to="/settings" className={styles.settingsBtn}>
-            <span>⚙</span> Settings
+            <span  className="material-symbols-outlined">settings </span> Settings
           </Link>
           <button className={styles.logoutBtn} onClick={() => { logout(); window.location.href = '/login'; }}>
-            <span>→</span> Sign out
+            <span  className="material-symbols-outlined">logout </span> Sign out
           </button>
         </div>
       </aside>
@@ -95,9 +95,9 @@ export default function Dashboard() {
             </h1>
             <span className={styles.pageCount}>{clips.length} item{clips.length !== 1 ? 's' : ''}</span>
           </div>
-          <div className={styles.headerRight}>
+          <div style={{display:"flex", alignItems:"flexEnd"}} className={styles.headerRight}>
             <div className={styles.searchWrap}>
-              <span className={styles.searchIcon}><img style={{width:"15px"}} src={search} alt="" /></span>
+              <span  className={styles.searchIcon}><span className="material-symbols-outlined">search</span></span>
               <input className={styles.searchInput} placeholder="Search clips…"
                 value={search} onChange={e => setSearch(e.target.value)} />
               {search && <button className={styles.clearBtn} onClick={() => setSearch('')}>✕</button>}
@@ -138,22 +138,22 @@ function ClipCard({ clip, onDelete, onPin, onCopy }) {
     <div className={`${styles.clipCard} ${clip.isPinned ? styles.pinned : ''}`}>
       <div className={styles.clipTop}>
         <span className={`badge ${badgeClass}`}>{clip.type}</span>
-        {clip.isPinned && <span style={{ fontSize: 12 }}>📌</span>}
+        {clip.isPinned && <span style={{ fontSize: 12 }}><span style={{fontSize:"1.2rem"}} className="material-symbols-outlined">keep </span></span>}
         <div style={{ marginLeft: 'auto', position: 'relative' }}>
           <button className="btn btn-ghost" style={{ padding: '4px 8px' }} onClick={() => setMenuOpen(o => !o)}>⋯</button>
           {menuOpen && (
             <div className={styles.menu} onMouseLeave={() => setMenuOpen(false)}>
               {clip.type === 'text' && (
                 <button className={styles.menuItem} onClick={() => { onCopy(clip.content); setMenuOpen(false); }}>
-                  📋 Copy
+                  <span className="material-symbols-outlined">content_copy</span>Copy
                 </button>
               )}
               <button className={styles.menuItem} onClick={() => { onPin(clip); setMenuOpen(false); }}>
-                {clip.isPinned ? '📌 Unpin' : '📌 Pin'}
+                {clip.isPinned ? <p style={{display:"flex", alignContent:"center", gap:".5rem" }}><span  className="material-symbols-outlined">keep_off </span> Unpin</p>  : <p style={{display:"flex", alignContent:"center", gap:".5rem" }}><span  className="material-symbols-outlined">keep </span> Pin</p>  }
               </button>
               <button className={styles.menuItem} style={{ color: '#DC2626' }}
                 onClick={() => { onDelete(clip._id); setMenuOpen(false); }}>
-                <img style={{width:"15px"}} src={removee} alt="" /> Delete
+                <span className="material-symbols-outlined">delete</span> Delete
               </button>
             </div>
           )}
@@ -165,7 +165,7 @@ function ClipCard({ clip, onDelete, onPin, onCopy }) {
           <img src={clip.fileUrl || clip.content} alt={clip.title} className={styles.clipImage} />
         ) : clip.type === 'document' ? (
           <div className={styles.docPreview}>
-            <span className={styles.docIcon}>📄</span>
+            <span  className={`material-symbols-outlined ${styles.docIcon}`} >docs</span>
             <div>
               <div className={styles.docName}>{clip.fileName || clip.title}</div>
               {clip.fileSize > 0 && (
@@ -239,10 +239,10 @@ function AddClipModal({ onClose, onSaved }) {
         <form onSubmit={handleSubmit}>
           <div className={styles.typeTabs}>
             {['text', 'image', 'document'].map(t => (
-              <button key={t} type="button"
+              <button style={{ display: 'flex', alignItems: 'center',justifyContent:"center", gap: '.5rem' }} key={t} type="button"
                 className={`${styles.typeTab} ${type === t ? styles.typeTabActive : ''}`}
                 onClick={() => setType(t)}>
-                {t === 'text' ? '📝' : t === 'image' ? '🖼' : '📄'} {t.charAt(0).toUpperCase() + t.slice(1)}
+                {t === 'text' ? <span className="material-symbols-outlined">text_fields</span> : t === 'image' ? <span  className="material-symbols-outlined">add_photo_alternate</span> : <span className="material-symbols-outlined">docs</span>} {t.charAt(0).toUpperCase() + t.slice(1)}
               </button>
             ))}
           </div>
@@ -259,24 +259,24 @@ function AddClipModal({ onClose, onSaved }) {
                 <label className="form-label">Content</label>
                 <textarea className="form-input" rows={6} placeholder="Paste your text here…"
                   value={content} onChange={e => setContent(e.target.value)} required
-                  style={{ resize: 'vertical' }} />
+                  style={{ resize: 'none' }} />
               </div>
             ) : (
               <div {...getRootProps()} className={`${styles.dropzone} ${isDragActive ? styles.dropzoneActive : ''}`}>
                 <input {...getInputProps()} />
                 {file ? (
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: 28 }}>{type === 'image' ? '🖼' : '📄'}</div>
+                    <div style={{ fontSize: 28 }}>{type === 'image' ? <span style={{ fontSize:"1.3rem" }} className="material-symbols-outlined">add_photo_alternate</span> : <span className="material-symbols-outlined">docs</span>}</div>
                     <div style={{ fontSize: 14, fontWeight: 500, marginTop: 8 }}>{file.name}</div>
                     <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>
                       {(file.size / 1024).toFixed(1)} KB
                     </div>
                     <button type="button" className="btn btn-ghost btn-sm" onClick={e => { e.stopPropagation(); setFile(null); }}
-                      style={{ marginTop: 8 }}>Remove</button>
+                      style={{ marginTop: 8 }}>Remove</button> 
                   </div>
                 ) : (
                   <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: 36 }}>{type === 'image' ? '🖼' : '📄'}</div>
+                    <div style={{ fontSize: 36 }}>{type === 'image' ? <span style={{ fontSize:"3rem" }} className="material-symbols-outlined">add_photo_alternate</span> : <span style={{ fontSize:"3rem" }} className="material-symbols-outlined">difference</span>}</div>
                     <div style={{ fontSize: 14, fontWeight: 500, marginTop: 8 }}>
                       {isDragActive ? 'Drop it here…' : `Drop ${type} here or click to browse`}
                     </div>
@@ -311,5 +311,5 @@ function EmptyState({ tab, onAdd }) {
 }
 
 function tabIcon(t) {
-  return { all: '◈', text: '📝', image: '🖼', document: '📄' }[t] || '◈';
+  return { all: <span className="material-symbols-outlined">apps</span>, text: <span className="material-symbols-outlined">text_fields</span>, image: <span class="material-symbols-outlined">imagesmode</span>, document: <span className="material-symbols-outlined">docs</span> }[t] || <span className="material-symbols-outlined">apps</span>;
 }
