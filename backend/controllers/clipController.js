@@ -1,7 +1,7 @@
 import Clip from '../models/Clip.js';
 import { cloudinary } from '../middleware/cloudinary.js';
 
-// GET all clips for user
+
 export const getClips = async (req, res) => {
   try {
     const { type, search, page = 1, limit = 20 } = req.query;
@@ -48,7 +48,7 @@ export const createClip = async (req, res) => {
   }
 };
 
-// UPDATE clip
+
 export const updateClip = async (req, res) => {
   try {
     const clip = await Clip.findOne({ _id: req.params.id, user: req.user.id });
@@ -67,7 +67,7 @@ export const updateClip = async (req, res) => {
   }
 };
 
-// DELETE clip
+
 export const deleteClip = async (req, res) => {
   try {
     const clip = await Clip.findOne({ _id: req.params.id, user: req.user.id });

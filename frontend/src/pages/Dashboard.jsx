@@ -7,8 +7,6 @@ import api from '../utils/api';
 import { useStore } from '../store';
 import Spinner from '../components/ui/Spinner';
 import styles from './Dashboard.module.css';
-import search from "../image/loupe.png";
-import removee from "../image/remove.png";
 
 const TABS = ['all', 'text', 'image', 'document'];
 
@@ -19,6 +17,12 @@ export default function Dashboard() {
   const [tab, setTab] = useState('all');
   const [search, setSearch] = useState('');
   const [showAdd, setShowAdd] = useState(false);
+  const [selectedClip, setSelectedClip] = useState(null);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
+  const [showPreviewModal, setShowPreviewModal] = useState(false);
+
+  const profileImage = user?.avatar?.url;
+  const profileInitial = user?.name?.[0]?.toUpperCase() || 'U';
 
   const fetchClips = useCallback(async () => {
     setLoading(true);
@@ -95,19 +99,43 @@ export default function Dashboard() {
             </h1>
             <span className={styles.pageCount}>{clips.length} item{clips.length !== 1 ? 's' : ''}</span>
           </div>
-          <div style={{display:"flex", alignItems:"flexEnd"}} className={styles.headerRight}>
+          <div style={{ display: 'flex', alignItems: 'flex-end' }} className={styles.headerRight}>
             <div className={styles.searchWrap}>
               <span  className={styles.searchIcon}><span className="material-symbols-outlined">search</span></span>
               <input className={styles.searchInput} placeholder="Search clips…"
                 value={search} onChange={e => setSearch(e.target.value)} />
               {search && <button className={styles.clearBtn} onClick={() => setSearch('')}>✕</button>}
             </div>
-            <button className="btn btn-primary" onClick={() => setShowAdd(true)}>
-              + Add Clip
+            <div className={styles.profileMenuWrap}>
+              <button type="button" className={styles.avatarBtn}
+                onClick={() => setProfileMenuOpen(open => !open)}
+                aria-label="Profile menu">
+                {profileImage ? (
+                  <img src={profileImage} alt="Profile" className={styles.profileAvatar} />
+                ) : (
+                  <span className={styles.profileFallback}>{profileInitial}</span>
+                )}
+              </button>
+              {profileMenuOpen && (
+                <div className={styles.profileMenu} onMouseLeave={() => setProfileMenuOpen(false)}>
+                  <Link to="/settings" className={`${styles.menuItem} ${styles.profileMenuItem}`} onClick={() => setProfileMenuOpen(false)}>
+                    <span className="material-symbols-outlined">settings</span>Settings
+                  </Link>
+                  <button type="button" className={`${styles.menuItem} ${styles.profileMenuItem}`} onClick={() => { setProfileMenuOpen(false); logout(); window.location.href = '/login'; }}>
+                    <span className="material-symbols-outlined">logout</span>Sign out
+                  </button>
+                </div>
+              )}
+            </div>
+            <button className="btn btn-primary headerAddButton invinsiblebtn" onClick={() => setShowAdd(true)}>
+              + Add Clip 
             </button>
           </div>
         </header>
 
+        {showPreviewModal && selectedClip && (
+          <PreviewModal clip={selectedClip} onClose={() => setShowPreviewModal(false)} onCopy={handleCopy} />
+        )}
         {loading ? (
           <div style={{ display: 'flex', justifyContent: 'center', padding: 80 }}>
             <Spinner size="lg" />
@@ -115,44 +143,83 @@ export default function Dashboard() {
         ) : clips.length === 0 ? (
           <EmptyState tab={tab} onAdd={() => setShowAdd(true)} />
         ) : (
-          <div className={styles.grid}>
-            {clips.map(clip => (
-              <ClipCard key={clip._id} clip={clip}
-                onDelete={handleDelete} onPin={togglePin} onCopy={handleCopy} />
-            ))}
-          </div>
+          <>
+            <div className={styles.mobileTop}>
+              <div className={styles.mobileTabs}>
+                {TABS.map(t => (
+                  <button key={t}
+                    type="button"
+                    className={`${styles.navItem} ${styles.mobileTab} ${tab === t ? styles.navActive : ''}`}
+                    onClick={() => setTab(t)}
+                    title={t.charAt(0).toUpperCase() + t.slice(1)}>
+                    <span className={styles.mobileTabIcon}>{tabIcon(t)}</span>
+                    <span className={styles.mobileTabText}>{t.charAt(0).toUpperCase() + t.slice(1)}</span>
+                  </button>
+                ))}
+              </div>
+             
+            </div>
+            <div className={styles.grid}>
+              {clips.map(clip => (
+                <ClipCard key={clip._id} clip={clip}
+                  onDelete={handleDelete} onPin={togglePin} onCopy={handleCopy}
+                  selected={selectedClip?._id === clip._id}
+                  onSelect={(c) => { setSelectedClip(c); setShowPreviewModal(true); }} />
+              ))}
+            </div>
+          </>
         )}
       </main>
 
+      <button type="button" className={styles.fab} onClick={() => setShowAdd(true)} aria-label="Add clip">
+        <span className="material-symbols-outlined">add</span>
+      </button>
       {showAdd && <AddClipModal onClose={() => setShowAdd(false)} onSaved={fetchClips} />}
     </div>
   );
 }
 
-function ClipCard({ clip, onDelete, onPin, onCopy }) {
+function ClipCard({ clip, onDelete, onPin, onCopy, selected, onSelect }) {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const badgeClass = { text: 'badge-text', image: 'badge-image', document: 'badge-document' }[clip.type];
 
+  const handleDownload = async (url, fileName) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = fileName || 'download';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(link.href);
+      toast.success('Download started');
+    } catch (err) {
+      toast.error('Download failed');
+    }
+  };
+
   return (
-    <div className={`${styles.clipCard} ${clip.isPinned ? styles.pinned : ''}`}>
+    <div className={`${styles.clipCard} ${clip.isPinned ? styles.pinned : ''} ${selected ? styles.clipCardSelected : ''}`} onClick={() => onSelect?.(clip)}>
       <div className={styles.clipTop}>
         <span className={`badge ${badgeClass}`}>{clip.type}</span>
         {clip.isPinned && <span style={{ fontSize: 12 }}><span style={{fontSize:"1.2rem"}} className="material-symbols-outlined">keep </span></span>}
         <div style={{ marginLeft: 'auto', position: 'relative' }}>
           <button className="btn btn-ghost" style={{ padding: '4px 8px' }} onClick={() => setMenuOpen(o => !o)}>⋯</button>
           {menuOpen && (
-            <div className={styles.menu} onMouseLeave={() => setMenuOpen(false)}>
+            <div className={styles.menu} onMouseLeave={() => setMenuOpen(false)} onClick={(e) => e.stopPropagation()}>
               {clip.type === 'text' && (
-                <button className={styles.menuItem} onClick={() => { onCopy(clip.content); setMenuOpen(false); }}>
+                <button className={styles.menuItem} onClick={(e) => { e.stopPropagation(); onCopy(clip.content); setMenuOpen(false); }}>
                   <span className="material-symbols-outlined">content_copy</span>Copy
                 </button>
               )}
-              <button className={styles.menuItem} onClick={() => { onPin(clip); setMenuOpen(false); }}>
+              <button className={styles.menuItem} onClick={(e) => { e.stopPropagation(); onPin(clip); setMenuOpen(false); }}>
                 {clip.isPinned ? <p style={{display:"flex", alignContent:"center", gap:".5rem" }}><span  className="material-symbols-outlined">keep_off </span> Unpin</p>  : <p style={{display:"flex", alignContent:"center", gap:".5rem" }}><span  className="material-symbols-outlined">keep </span> Pin</p>  }
               </button>
               <button className={styles.menuItem} style={{ color: '#DC2626' }}
-                onClick={() => { onDelete(clip._id); setMenuOpen(false); }}>
+                onClick={(e) => { e.stopPropagation(); onDelete(clip._id); setMenuOpen(false); }}>
                 <span className="material-symbols-outlined">delete</span> Delete
               </button>
             </div>
@@ -182,10 +249,14 @@ function ClipCard({ clip, onDelete, onPin, onCopy }) {
         <span className={styles.clipDate}>
           {formatDistanceToNow(new Date(clip.createdAt), { addSuffix: true })}
         </span>
-        {clip.type === 'document' && clip.fileUrl && (
-          <a href={clip.fileUrl} target="_blank" rel="noreferrer" className={styles.downloadBtn}>
+        {(clip.type === 'document' || clip.type === 'image') && clip.fileUrl && (
+          <button
+            onClick={() => handleDownload(clip.fileUrl, clip.fileName || clip.title)}
+            className={styles.downloadBtn}
+            style={{  border: 'none', cursor: 'pointer'}}
+          >
             ↓ Download
-          </a>
+          </button>
         )}
       </div>
     </div>
@@ -299,6 +370,41 @@ function AddClipModal({ onClose, onSaved }) {
   );
 }
 
+function PreviewModal({ clip, onClose, onCopy }) {
+  return (
+    <div className={styles.previewModalOverlay} onClick={e => e.target === e.currentTarget && onClose()}>
+      <div className={styles.previewModalContent}>
+        <div className={styles.previewModalHeader}>
+          <div>
+            <span className={styles.previewLabel}>Clip preview</span>
+            <h2 className={styles.previewTitle}>{clip.title || 'Untitled clip'}</h2>
+          </div>
+          <button type="button" className="btn btn-ghost" onClick={onClose}>✕</button>
+        </div>
+        <div className={styles.previewModalBody}>
+          {clip.type === 'image' ? (
+            <img src={clip.fileUrl || clip.content} alt={clip.title} className={styles.previewImage} />
+          ) : clip.type === 'document' ? (
+            <div className={styles.previewDocument}>
+              <span className={`material-symbols-outlined ${styles.docIcon}`}>docs</span>
+              <div>
+                <div className={styles.docName}>{clip.fileName || clip.title}</div>
+                <div className={styles.docSize}>{clip.fileSize > 0 ? `${(clip.fileSize / 1024).toFixed(1)} KB` : 'Document preview'}</div>
+              </div>
+            </div>
+          ) : (
+            <p className={styles.previewText}>{clip.content}</p>
+          )}
+        </div>
+        <div className={styles.previewModalFooter}>
+          <button type="button" className="btn btn-secondary" onClick={onClose}>Close</button>
+          <button type="button" className="btn btn-primary" onClick={() => onCopy(clip.content || clip.fileUrl || '')}>Copy</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function EmptyState({ tab, onAdd }) {
   return (
     <div className={styles.empty}>
@@ -311,5 +417,5 @@ function EmptyState({ tab, onAdd }) {
 }
 
 function tabIcon(t) {
-  return { all: <span className="material-symbols-outlined">apps</span>, text: <span className="material-symbols-outlined">text_fields</span>, image: <span class="material-symbols-outlined">imagesmode</span>, document: <span className="material-symbols-outlined">docs</span> }[t] || <span className="material-symbols-outlined">apps</span>;
+  return { all: <span className="material-symbols-outlined">apps</span>, text: <span className="material-symbols-outlined">text_fields</span>, image: <span className="material-symbols-outlined">imagesmode</span>, document: <span className="material-symbols-outlined">docs</span> }[t] || <span className="material-symbols-outlined">apps</span>;
 }

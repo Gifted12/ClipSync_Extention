@@ -202,6 +202,7 @@ function renderClipsList() {
                 ${clip.type === 'text'
                   ? `<button class="btn btn-ghost btn-icon copy-btn" data-content="${escAttr(clip.content)}" title="Copy">📋</button>`
                   : ''}
+                ${clip.fileUrl ? `<a href="${clip.fileUrl}" target="_blank" class="btn btn-ghost btn-icon" title="Download">↓</a>` : ''}
                 <button class="btn btn-ghost btn-icon delete-btn" data-id="${clip._id}" title="Delete" style="color:#DC2626">🗑</button>
               </div>
             </div>

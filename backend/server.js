@@ -12,20 +12,38 @@ dotenv.config();
 const app = express();
 
 
+// app.use(cors({
+//   origin: function(origin, callback) {
+//     if (!origin) return callback(null, true);
+//     const allowed = [
+//       process.env.CLIENT_URL || 'http://localhost:5173',
+//     ];
+
+//     if (origin.startsWith('chrome-extension://')) return callback(null, true);
+//     if (allowed.includes(origin)) return callback(null, true);
+//     callback(new Error('Not allowed by CORS'));
+//   },
+//   credentials: true,
+// }));
 app.use(cors({
   origin: function(origin, callback) {
     if (!origin) return callback(null, true);
-    const allowed = [
-      process.env.CLIENT_URL || 'http://localhost:5173',
-    
-    ];
-
     if (origin.startsWith('chrome-extension://')) return callback(null, true);
+    const allowed = [
+      process.env.CLIENT_URL,
+      'http://localhost:5173',
+      'http://localhost:3000',
+    ];
     if (allowed.includes(origin)) return callback(null, true);
     callback(new Error('Not allowed by CORS'));
   },
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
+
+app.options('*', cors());
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));

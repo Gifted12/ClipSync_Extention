@@ -1,7 +1,7 @@
 import User from '../models/User.js';
 import { cloudinary } from '../middleware/cloudinary.js';
 
-// GET profile
+
 export const getProfile = async (req, res) => {
   try {
     res.json(req.user);
@@ -10,7 +10,7 @@ export const getProfile = async (req, res) => {
   }
 };
 
-// UPDATE profile
+
 export const updateProfile = async (req, res) => {
   try {
     const { name, theme } = req.body;
@@ -20,7 +20,7 @@ export const updateProfile = async (req, res) => {
     if (theme) user.theme = theme;
 
     if (req.file) {
-      // Delete old avatar
+    
       if (user.avatar?.publicId) {
         await cloudinary.uploader.destroy(user.avatar.publicId);
       }
