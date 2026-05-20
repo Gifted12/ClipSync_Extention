@@ -10,6 +10,41 @@ import styles from './Dashboard.module.css';
 
 const TABS = ['all', 'text', 'image', 'document'];
 
+
+const ACCEPTED_TYPES = {
+  'image/jpeg': [], 'image/png': [], 'image/gif': [], 'image/webp': [],
+  'image/svg+xml': [], 'image/bmp': [], 'image/tiff': [],
+  'application/pdf': [],
+  'application/msword': [],
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document': [],
+  'application/vnd.ms-excel': [],
+  'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': [],
+  'application/vnd.ms-powerpoint': [],
+  'application/vnd.openxmlformats-officedocument.presentationml.presentation': [],
+  'text/plain': [], 'text/csv': [], 'text/html': [],
+  'text/css': [], 'text/javascript': [],
+  'application/zip': [], 'application/x-rar-compressed': [],
+  'application/x-7z-compressed': [], 'application/x-tar': [], 'application/gzip': [],
+  'audio/mpeg': [], 'audio/wav': [], 'audio/ogg': [], 'audio/mp4': [], 'audio/flac': [],
+  'application/json': [], 'application/xml': [],
+  'font/ttf': [], 'font/otf': [], 'font/woff': [], 'font/woff2': [],
+};
+
+function getFileIcon(mimeType = '') {
+  if (mimeType.startsWith('image/'))      return '🖼';
+  if (mimeType === 'application/pdf')     return '📕';
+  if (mimeType.includes('word'))          return '📘';
+  if (mimeType.includes('excel') || mimeType.includes('spreadsheet')) return '📗';
+  if (mimeType.includes('powerpoint') || mimeType.includes('presentation')) return '📙';
+  if (mimeType.startsWith('audio/'))      return '🎵';
+  if (mimeType.includes('zip') || mimeType.includes('rar') || mimeType.includes('7z')) return '🗜';
+  if (mimeType.startsWith('font/'))       return '🔤';
+  if (mimeType.includes('json'))          return '{}';
+  if (mimeType.includes('xml'))           return '<>';
+  if (mimeType.startsWith('text/'))       return '📄';
+  return '📎';
+}
+
 export default function Dashboard() {
   const { user, logout } = useStore();
   const [clips, setClips] = useState([]);
@@ -127,8 +162,8 @@ export default function Dashboard() {
                 </div>
               )}
             </div>
-            <button className="btn btn-primary headerAddButton invinsiblebtn" onClick={() => setShowAdd(true)}>
-              + Add Clip 
+            <button  className={` btn-primary ${styles.headerAddButton}`} onClick={() => setShowAdd(true)}>
+              + Add Clip
             </button>
           </div>
         </header>
@@ -202,7 +237,7 @@ function ClipCard({ clip, onDelete, onPin, onCopy, selected, onSelect }) {
   };
 
   return (
-    <div className={`${styles.clipCard} ${clip.isPinned ? styles.pinned : ''} ${selected ? styles.clipCardSelected : ''}`} onClick={() => onSelect?.(clip)}>
+    <div className={`${styles.clipCard} ${clip.isPinned ? styles.pinned : ''} ${selected ? styles.clipCardSelected : ''}`}>
       <div className={styles.clipTop}>
         <span className={`badge ${badgeClass}`}>{clip.type}</span>
         {clip.isPinned && <span style={{ fontSize: 12 }}><span style={{fontSize:"1.2rem"}} className="material-symbols-outlined">keep </span></span>}
@@ -227,7 +262,7 @@ function ClipCard({ clip, onDelete, onPin, onCopy, selected, onSelect }) {
         </div>
       </div>
 
-      <div className={styles.clipBody}>
+      <div className={styles.clipBody} onClick={(e) => { e.stopPropagation(); onSelect?.(clip); }}>
         {clip.type === 'image' ? (
           <img src={clip.fileUrl || clip.content} alt={clip.title} className={styles.clipImage} />
         ) : clip.type === 'document' ? (
@@ -271,12 +306,22 @@ function AddClipModal({ onClose, onSaved }) {
   const [loading, setLoading] = useState(false);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    onDrop: files => setFile(files[0]),
+    onDrop: f => setFile(f[0]),
     maxFiles: 1,
     accept: type === 'image'
-      ? { 'image/*': [] }
-      : { 'application/pdf': [], 'application/msword': [], 'text/plain': [] },
+      ? { 'image/jpeg': [], 'image/png': [], 'image/gif': [], 'image/webp': [],
+          'image/svg+xml': [], 'image/bmp': [] }
+      : ACCEPTED_TYPES,
+    validator: f => f.type.startsWith('video/')
+      ? { code: 'file-invalid-type', message: 'Video files are not supported' }
+      : null,
   });
+  useEffect(() => {
+    const fn = e => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', fn);
+    return () => window.removeEventListener('keydown', fn);
+  }, [onClose]);
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -398,7 +443,26 @@ function PreviewModal({ clip, onClose, onCopy }) {
         </div>
         <div className={styles.previewModalFooter}>
           <button type="button" className="btn btn-secondary" onClick={onClose}>Close</button>
-          <button type="button" className="btn btn-primary" onClick={() => onCopy(clip.content || clip.fileUrl || '')}>Copy</button>
+          {clip.type === 'text' ? (
+            <button type="button" className="btn btn-primary" onClick={() => onCopy(clip.content || '')}>Copy</button>
+          ) : (
+            <button type="button" className="btn btn-primary" onClick={async () => {
+              try {
+                const response = await fetch(clip.fileUrl);
+                const blob = await response.blob();
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = clip.fileName || clip.title || 'download';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+                toast.success('Download started');
+              } catch (err) {
+                toast.error('Download failed');
+              }
+            }}>Download</button>
+          )}
         </div>
       </div>
     </div>

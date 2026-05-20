@@ -216,6 +216,9 @@
 
 @media (max-width: 768px) {
   .sidebar { display: none; }
-  .backLink { display: block; }
+  .backLink { display: none; }
+  .backLinkMobile { display: block; padding: 0 20px 16px; font-size: 13px; font-weight: 600; color: var(--text-muted); }
+  .backLinkMobile a { color: var(--text-muted); }
+  .backLinkMobile a:hover { color: var(--text-primary); }
   .main { padding: 24px 20px; }
 }

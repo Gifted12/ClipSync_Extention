@@ -12,19 +12,6 @@ dotenv.config();
 const app = express();
 
 
-// app.use(cors({
-//   origin: function(origin, callback) {
-//     if (!origin) return callback(null, true);
-//     const allowed = [
-//       process.env.CLIENT_URL || 'http://localhost:5173',
-//     ];
-
-//     if (origin.startsWith('chrome-extension://')) return callback(null, true);
-//     if (allowed.includes(origin)) return callback(null, true);
-//     callback(new Error('Not allowed by CORS'));
-//   },
-//   credentials: true,
-// }));
 app.use(cors({
   origin: function(origin, callback) {
     if (!origin) return callback(null, true);

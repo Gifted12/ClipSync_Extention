@@ -14,17 +14,27 @@ const storage = new CloudinaryStorage({
   cloudinary,
   params: async (req, file) => {
     const isImage = file.mimetype.startsWith('image/');
+    const isAudio = file.mimetype.startsWith('audio/');
     return {
       folder: `clipsync/${req.user.id}`,
-      resource_type: isImage ? 'image' : 'raw',
-      allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp', 'pdf', 'doc', 'docx', 'txt'],
+      resource_type: isImage ? 'image' : isAudio ? 'video' : 'raw',
+      use_filename: true,
+      unique_filename: true,
     };
   },
 });
 
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype.startsWith('video/')) {
+    return cb(new Error('Video files are not supported'), false);
+  }
+  cb(null, true);
+};
+
 export const upload = multer({
   storage,
-  limits: { fileSize: 50 * 1024 * 1024 }, 
+  fileFilter,
+  limits: { fileSize: 25 * 1024 * 1024 },
 });
 
 export { cloudinary };

@@ -37,6 +37,9 @@ export default function Settings() {
       </aside>
 
       <main className={styles.main}>
+        <div className={styles.backLinkMobile}>
+          <Link to="/dashboard"><p style={{display:"flex", alignItems:"center", gap:".5rem"}}><span className="material-symbols-outlined">arrow_left_alt </span> Back </p></Link>
+        </div>
         {tab === 'profile' && <ProfileTab user={user} updateUser={updateUser} />}
         {tab === 'appearance' && <AppearanceTab user={user} updateUser={updateUser} setTheme={setTheme} />}
         {tab === 'security' && <SecurityTab user={user} />}
